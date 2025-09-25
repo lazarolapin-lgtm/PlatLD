@@ -1,0 +1,1064 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${siteData.title}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Abel', sans-serif; color: #fff; overflow-x: hidden; }
+
+    .background-container {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      overflow: hidden; z-index: -1;
+    }
+    .background-container img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    .content { position: relative; z-index: 1; text-align: center; }
+    .page { display: none; }
+    .page.active { display: block; width: 100%; min-height: 100vh; }
+
+    .navbar {
+      overflow: hidden; background: rgba(30, 58, 95, 0.6);
+      display: flex; justify-content: flex-end; padding: 10px;
+    }
+    .navbar a {
+      color: white; padding: 15px 21px; text-decoration: none;
+    }
+    .navbar a:hover { background: rgba(255, 255, 255, 0.1); border-radius: 8px; }
+
+    .logo-container {
+      display: flex; justify-content: center; align-items: center;
+      position: relative; padding: 50px 20px;
+    }
+    .logo img { max-width: 600px; height: auto; }
+
+    .carrinho {
+      position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+    }
+    .carrinho img { width: 40px; height: 40px; cursor: pointer; }
+
+    .carrossel-texto {
+      white-space: nowrap; overflow: hidden; width: 100%; margin: 20px 0;
+    }
+    .carrossel-texto span {
+      display: inline-block; padding-left: 100%;
+      animation: scroll 20s linear infinite;
+      font-size: 2rem; font-weight: bold; color:#F2F2F0;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+    @keyframes scroll { 0% { transform: translateX(0);} 100% { transform: translateX(-100%);} }
+
+    .galeria-container {
+      position: relative; margin: 20px auto; width: 95%;
+      display: flex; justify-content: center;
+    }
+    .galeria {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 15px; justify-items: center; width: 100%;
+    }
+    .galeria img {
+      width: 300px; height: 300px; object-fit: cover;
+      border-radius: 0; transition: transform 0.3s ease;
+    }
+    .galeria img:hover { transform: scale(1.05); }
+
+    .gallery-button {
+      padding: 15px 30px; background-color: ${siteData.colors.primary}; color: white;
+      font-size: 18px; border-radius: 0; opacity: 0.6;
+      transition: all 0.3s ease; margin: 30px 0;
+      border: none; cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+    .gallery-button:hover {
+      opacity: 1; transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+      background-color: ${siteData.colors.secondary};
+    }
+
+    .curtain-wrapper { position: absolute; top: 0; right: 0; width: 1300px; height: 100%; cursor: pointer; }
+    .curtain {
+      position: absolute; right: 0; top: 0; width: 100%; height: 100%;
+      background: rgba(30, 58, 95, 0.8);
+      transform-origin: right center; transform: scaleX(0);
+      transition: transform 700ms cubic-bezier(.2,.8,.2,1);
+      display: flex; justify-content: center; align-items: center;
+    }
+    .curtain-wrapper:hover .curtain { transform: scaleX(1); }
+
+    .grid-gifs {
+      display: grid; grid-template-columns: repeat(5, 200px);
+      grid-template-rows: repeat(2, 250px); gap: 20px;
+    }
+    .gif-block { width: 200px; height: 250px; background: #12121A; display: flex; align-items: center; justify-content: center; }
+    .gif-block img { width: 100%; height: 100%; object-fit: cover; }
+
+    .retangulos { display: flex; gap: 70px; animation: mover 35s linear infinite; margin: 50px 0; }
+    .retangulo { width: 400px; height: 600px; background: rgba(255,255,255,0.05); border-radius: 0; }
+    .retangulo img { width: 100%; height: 100%; object-fit: cover; }
+    @keyframes mover { 0% { transform: translateX(-100%);} 100% { transform: translateX(100%);} }
+
+    .mockup-page {
+      padding: 20px;
+      background: rgba(0,0,0,0.7);
+      min-height: 100vh;
+    }
+
+    .back-btn {
+      position: fixed; top: 20px; left: 20px; z-index: 1000;
+      background: ${siteData.colors.primary}; color: white; border: none;
+      padding: 10px 20px; border-radius: 5px; cursor: pointer;
+      font-size: 16px; transition: all 0.3s ease;
+    }
+    .back-btn:hover { background: ${siteData.colors.secondary}; }
+
+    .gallery-page-content {
+      max-width: 1200px; margin: 0 auto; padding: 60px 20px 20px;
+    }
+    .gallery-page-content h2 {
+      font-size: 2.5rem; margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+    .gallery-<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Editor Visual - LAPINDESIGNER360</title>
+  <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    
+    body { 
+      font-family: 'Abel', sans-serif; 
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      color: #fff; 
+      overflow-x: hidden; 
+    }
+
+    /* Layout principal */
+    .editor-container {
+      display: flex;
+      height: 100vh;
+    }
+
+    /* Painel lateral de controles */
+    .control-panel {
+      width: 350px;
+      background: linear-gradient(135deg, #0f1419, #1e3a5f);
+      border-right: 2px solid #024059;
+      overflow-y: auto;
+      box-shadow: 5px 0 20px rgba(0,0,0,0.3);
+    }
+
+    /* Área de preview */
+    .preview-area {
+      flex: 1;
+      position: relative;
+      background: #0a0a0a;
+    }
+
+    /* Header do editor */
+    .editor-header {
+      background: linear-gradient(135deg, #024059, #026873);
+      padding: 20px;
+      text-align: center;
+      border-bottom: 2px solid #03a63c;
+    }
+
+    .editor-header h1 {
+      font-size: 1.8rem;
+      margin-bottom: 10px;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+
+    .editor-header p {
+      opacity: 0.8;
+      font-size: 0.9rem;
+    }
+
+    /* Seções do painel */
+    .panel-section {
+      margin: 20px;
+      background: rgba(255,255,255,0.05);
+      border-radius: 10px;
+      overflow: hidden;
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .section-header {
+      background: rgba(2,64,89,0.8);
+      padding: 15px;
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: all 0.3s ease;
+    }
+
+    .section-header:hover {
+      background: rgba(2,64,89,1);
+    }
+
+    .section-header h3 {
+      font-size: 1.1rem;
+    }
+
+    .section-header i {
+      transition: transform 0.3s ease;
+    }
+
+    .section-header.collapsed i {
+      transform: rotate(-90deg);
+    }
+
+    .section-content {
+      padding: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+      transition: max-height 0.3s ease;
+    }
+
+    .section-content.collapsed {
+      max-height: 0;
+      padding: 0 20px;
+    }
+
+    /* Controles do formulário */
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #ccc;
+      font-size: 0.9rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid rgba(255,255,255,0.2);
+      border-radius: 5px;
+      background: rgba(0,0,0,0.3);
+      color: #fff;
+      font-family: inherit;
+      font-size: 0.9rem;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+      outline: none;
+      border-color: #024059;
+      box-shadow: 0 0 10px rgba(2,64,89,0.5);
+    }
+
+    /* Botões */
+    .btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-family: inherit;
+      font-size: 0.9rem;
+      transition: all 0.3s ease;
+      margin: 5px;
+      min-width: 100px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #024059, #026873);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, #026873, #03a63c);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    }
+
+    .btn-success {
+      background: linear-gradient(135deg, #03a63c, #028a32);
+      color: white;
+    }
+
+    .btn-success:hover {
+      background: linear-gradient(135deg, #028a32, #027d2e);
+      transform: translateY(-2px);
+    }
+
+    .btn-danger {
+      background: linear-gradient(135deg, #dc3545, #c82333);
+      color: white;
+    }
+
+    .btn-danger:hover {
+      background: linear-gradient(135deg, #c82333, #bd2130);
+      transform: translateY(-2px);
+    }
+
+    /* Lista de imagens */
+    .image-list {
+      max-height: 200px;
+      overflow-y: auto;
+      background: rgba(0,0,0,0.2);
+      border-radius: 5px;
+      padding: 10px;
+    }
+
+    .image-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px;
+      margin: 5px 0;
+      background: rgba(255,255,255,0.05);
+      border-radius: 3px;
+      font-size: 0.8rem;
+    }
+
+    .image-item:hover {
+      background: rgba(255,255,255,0.1);
+    }
+
+    .image-preview {
+      width: 40px;
+      height: 40px;
+      object-fit: cover;
+      border-radius: 3px;
+      margin-right: 10px;
+    }
+
+    /* Preview iframe */
+    .preview-frame {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: white;
+    }
+
+    /* Barra superior do preview */
+    .preview-header {
+      background: rgba(2,64,89,0.9);
+      padding: 10px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 2px solid #03a63c;
+    }
+
+    .preview-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Toolbar flutuante */
+    .floating-toolbar {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(2,64,89,0.95);
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      z-index: 1000;
+      backdrop-filter: blur(10px);
+    }
+
+    /* Animações */
+    @keyframes slideIn {
+      from { transform: translateX(-100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .control-panel {
+      animation: slideIn 0.5s ease-out;
+    }
+
+    .panel-section {
+      animation: fadeIn 0.6s ease-out;
+    }
+
+    /* Responsivo */
+    @media (max-width: 768px) {
+      .editor-container {
+        flex-direction: column;
+      }
+      
+      .control-panel {
+        width: 100%;
+        height: 50vh;
+      }
+      
+      .floating-toolbar {
+        position: relative;
+        top: auto;
+        right: auto;
+        margin: 10px;
+      }
+    }
+
+    /* Color picker customizado */
+    .color-picker-group {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .color-preview {
+      width: 30px;
+      height: 30px;
+      border-radius: 5px;
+      border: 2px solid rgba(255,255,255,0.3);
+      cursor: pointer;
+    }
+
+    /* Progress bar */
+    .progress-bar {
+      width: 100%;
+      height: 4px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 2px;
+      overflow: hidden;
+      margin: 10px 0;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #03a63c, #026873);
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* Toast notifications */
+    .toast {
+      position: fixed;
+      top: 80px;
+      right: 20px;
+      background: rgba(2,64,89,0.95);
+      color: white;
+      padding: 15px 20px;
+      border-radius: 8px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+      z-index: 1001;
+      transform: translateX(100%);
+      transition: transform 0.3s ease;
+    }
+
+    .toast.show {
+      transform: translateX(0);
+    }
+
+    .toast.success {
+      background: rgba(3,166,60,0.95);
+    }
+
+    /* Importação de arquivo */
+    .file-drop-zone {
+      border: 2px dashed rgba(255,255,255,0.3);
+      border-radius: 10px;
+      padding: 30px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin: 10px 0;
+    }
+
+    .file-drop-zone:hover,
+    .file-drop-zone.drag-over {
+      border-color: #024059;
+      background: rgba(2,64,89,0.1);
+    }
+
+    .file-drop-zone i {
+      font-size: 2rem;
+      color: #024059;
+      margin-bottom: 10px;
+    }
+
+    .file-info {
+      background: rgba(3,166,60,0.2);
+      border: 1px solid rgba(3,166,60,0.5);
+      padding: 10px;
+      border-radius: 5px;
+      margin: 10px 0;
+    }
+
+    .file-info.error {
+      background: rgba(220,53,69,0.2);
+      border-color: rgba(220,53,69,0.5);
+    }
+
+    .parsing-indicator {
+      display: none;
+      text-align: center;
+      padding: 20px;
+    }
+
+    .parsing-indicator.active {
+      display: block;
+    }
+
+    .spinner {
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top: 3px solid #024059;
+      width: 30px;
+      height: 30px;
+      animation: spin 1s linear infinite;
+      margin: 0 auto 10px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <div class="editor-container">
+    <!-- Painel de Controles -->
+    <div class="control-panel">
+      <div class="editor-header">
+        <h1><i class="fas fa-palette"></i> Editor Visual</h1>
+        <p>Edite seu site de forma intuitiva</p>
+      </div>
+
+      <!-- Seção de Importar/Exportar -->
+      <div class="panel-section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <h3><i class="fas fa-upload"></i> Importar/Exportar</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="section-content">
+          <div class="form-group">
+            <label>Importar Arquivo HTML</label>
+            <input type="file" id="htmlImport" accept=".html,.htm" onchange="importHTML()" style="margin-bottom: 10px;">
+            <small style="color: #ccc; font-size: 0.8rem;">Selecione um arquivo HTML para editar</small>
+          </div>
+          
+          <div class="form-group">
+            <button class="btn btn-primary" onclick="document.getElementById('htmlImport').click()">
+              <i class="fas fa-file-import"></i> Selecionar Arquivo
+            </button>
+            
+            <button class="btn btn-success" onclick="exportCurrentHTML()" style="margin-left: 10px;">
+              <i class="fas fa-file-export"></i> Exportar Atual
+            </button>
+          </div>
+
+          <div class="form-group">
+            <label>Status do Arquivo</label>
+            <div id="fileStatus" style="padding: 10px; background: rgba(0,0,0,0.3); border-radius: 5px; font-size: 0.9rem;">
+              <i class="fas fa-info-circle"></i> Nenhum arquivo importado
+            </div>
+          </div>
+
+          <div class="form-group">
+            <button class="btn btn-danger" onclick="resetToDefault()" title="Voltar ao template padrão">
+              <i class="fas fa-undo"></i> Resetar para Padrão
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção de Configurações Gerais -->
+      <div class="panel-section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <h3><i class="fas fa-cog"></i> Configurações Gerais</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="section-content">
+          <div class="form-group">
+            <label>Título do Site</label>
+            <input type="text" id="siteTitle" value="LAPINDESIGNER360" onchange="updateSite()">
+          </div>
+          
+          <div class="form-group">
+            <label>Logo Principal</label>
+            <input type="url" id="logoUrl" value="https://i.postimg.cc/tRdqcYbN/untitled-0.png" onchange="updateSite()">
+          </div>
+          
+          <div class="form-group">
+            <label>Imagem de Fundo</label>
+            <input type="url" id="backgroundUrl" value="https://i.postimg.cc/63gtJpwQ/4K-3.gif" onchange="updateSite()">
+          </div>
+          
+          <div class="form-group">
+            <label>Texto do Carrossel</label>
+            <input type="text" id="carouselText" value="SUA LOGOTIPO ESTA AQUI" onchange="updateSite()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção de Cores -->
+      <div class="panel-section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <h3><i class="fas fa-palette"></i> Esquema de Cores</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="section-content">
+          <div class="form-group">
+            <label>Cor Principal</label>
+            <div class="color-picker-group">
+              <input type="color" id="primaryColor" value="#024059" onchange="updateColors()">
+              <div class="color-preview" style="background: #024059"></div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Cor Secundária</label>
+            <div class="color-picker-group">
+              <input type="color" id="secondaryColor" value="#026873" onchange="updateColors()">
+              <div class="color-preview" style="background: #026873"></div>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label>Cor de Destaque</label>
+            <div class="color-picker-group">
+              <input type="color" id="accentColor" value="#03A63C" onchange="updateColors()">
+              <div class="color-preview" style="background: #03A63C"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção de Navegação -->
+      <div class="panel-section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <h3><i class="fas fa-bars"></i> Menu de Navegação</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="section-content">
+          <div class="form-group">
+            <label>Link WhatsApp</label>
+            <input type="text" id="whatsappLink" value="5511958759477" onchange="updateSite()">
+          </div>
+          
+          <div class="form-group">
+            <label>Link Sobre</label>
+            <input type="url" id="aboutLink" value="https://www.google.com" onchange="updateSite()">
+          </div>
+          
+          <div class="form-group">
+            <label>Link Termos</label>
+            <input type="url" id="termsLink" value="https://i.postimg.cc/HnYcXZPN/pedido-termo-logotipo-logo.png" onchange="updateSite()">
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção de Galeria -->
+      <div class="panel-section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <h3><i class="fas fa-images"></i> Gerenciar Galeria</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="section-content">
+          <div class="form-group">
+            <label>Adicionar Nova Imagem</label>
+            <input type="url" id="newImageUrl" placeholder="URL da imagem">
+          </div>
+          
+          <div class="form-group">
+            <input type="text" id="newImageAlt" placeholder="Texto alternativo">
+          </div>
+          
+          <button class="btn btn-primary" onclick="addImage()">
+            <i class="fas fa-plus"></i> Adicionar Imagem
+          </button>
+          
+          <div class="image-list" id="imageList">
+            <!-- Imagens serão listadas aqui -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Seção de Mockups -->
+      <div class="panel-section">
+        <div class="section-header" onclick="toggleSection(this)">
+          <h3><i class="fas fa-magic"></i> Mockups & Animações</h3>
+          <i class="fas fa-chevron-down"></i>
+        </div>
+        <div class="section-content">
+          <div class="form-group">
+            <label>Título da Galeria de Mockups</label>
+            <input type="text" id="mockupTitle" value="🎨 Galeria de Mockups GIF" onchange="updateSite()">
+          </div>
+          
+          <div class="form-group">
+            <label>Descrição da Galeria</label>
+            <textarea id="mockupDescription" rows="3" onchange="updateSite()">Explore nossa coleção exclusiva de mockups animados e designs em movimento</textarea>
+          </div>
+          
+          <button class="btn btn-primary" onclick="addMockup()">
+            <i class="fas fa-plus"></i> Adicionar Mockup
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Área de Preview -->
+    <div class="preview-area">
+      <div class="preview-header">
+        <h3><i class="fas fa-eye"></i> Preview do Site</h3>
+        <div class="preview-actions">
+          <button class="btn btn-primary" onclick="refreshPreview()">
+            <i class="fas fa-sync"></i> Atualizar
+          </button>
+          <button class="btn btn-success" onclick="saveChanges()">
+            <i class="fas fa-save"></i> Salvar
+          </button>
+          <button class="btn btn-primary" onclick="downloadHTML()">
+            <i class="fas fa-download"></i> Baixar HTML
+          </button>
+        </div>
+      </div>
+      
+      <iframe class="preview-frame" id="previewFrame" srcdoc=""></iframe>
+    </div>
+  </div>
+
+  <!-- Toolbar Flutuante -->
+  <div class="floating-toolbar">
+    <div class="progress-bar">
+      <div class="progress-fill" id="progressFill"></div>
+    </div>
+    <p style="margin: 10px 0 5px 0; font-size: 0.9rem;">Progresso da Edição</p>
+    <button class="btn btn-success" onclick="previewChanges()">
+      <i class="fas fa-play"></i> Visualizar
+    </button>
+  </div>
+
+  <!-- Toast Notification -->
+  <div class="toast" id="toast">
+    <span id="toastMessage"></span>
+  </div>
+
+  <script>
+    // Dados do site original
+    let siteData = {
+      title: "LAPINDESIGNER360",
+      logoUrl: "https://i.postimg.cc/tRdqcYbN/untitled-0.png",
+      backgroundUrl: "https://i.postimg.cc/63gtJpwQ/4K-3.gif",
+      carouselText: "SUA LOGOTIPO ESTA AQUI",
+      colors: {
+        primary: "#024059",
+        secondary: "#026873", 
+        accent: "#03A63C"
+      },
+      navigation: {
+        whatsapp: "5511958759477",
+        about: "https://www.google.com",
+        terms: "https://i.postimg.cc/HnYcXZPN/pedido-termo-logotipo-logo.png"
+      },
+      gallery: [
+        { url: "https://i.postimg.cc/qMDgkjGV/TA-FODA-1.png", alt: "Logo TA FODA" },
+        { url: "https://i.postimg.cc/d0r0jvcw/LAS-2025-1.png", alt: "Logo LAS 2025" },
+        { url: "https://i.postimg.cc/0242gr89/JAGUA-JOIAS-1.png", alt: "Logo JAGUA JOIAS" },
+        { url: "https://i.postimg.cc/0NRkQ3M3/ERA-PANDA-1.png", alt: "Logo ERA PANDA" },
+        { url: "https://i.postimg.cc/ZRwnT8tD/PLLAY-1.png", alt: "Logo PLLAY" }
+      ],
+      mockups: {
+        title: "🎨 Galeria de Mockups GIF",
+        description: "Explore nossa coleção exclusiva de mockups animados e designs em movimento"
+      }
+    };
+
+    // Armazenar HTML original importado
+    let originalHTML = "";
+    let isImported = false;
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', function() {
+      initializeEditor();
+      loadImageList();
+      updateProgress();
+      setupDragAndDrop();
+      updateFileStatus();
+    });
+
+    // Inicializar editor
+    function initializeEditor() {
+      generatePreview();
+      showToast('Editor carregado com sucesso!', 'success');
+    }
+
+    // Toggle seções
+    function toggleSection(header) {
+      const content = header.nextElementSibling;
+      const icon = header.querySelector('i.fa-chevron-down');
+      
+      content.classList.toggle('collapsed');
+      header.classList.toggle('collapsed');
+    }
+
+    // Atualizar site
+    function updateSite() {
+      siteData.title = document.getElementById('siteTitle').value;
+      siteData.logoUrl = document.getElementById('logoUrl').value;
+      siteData.backgroundUrl = document.getElementById('backgroundUrl').value;
+      siteData.carouselText = document.getElementById('carouselText').value;
+      siteData.navigation.whatsapp = document.getElementById('whatsappLink').value;
+      siteData.navigation.about = document.getElementById('aboutLink').value;
+      siteData.navigation.terms = document.getElementById('termsLink').value;
+      
+      if (document.getElementById('mockupTitle')) {
+        siteData.mockups.title = document.getElementById('mockupTitle').value;
+      }
+      if (document.getElementById('mockupDescription')) {
+        siteData.mockups.description = document.getElementById('mockupDescription').value;
+      }
+      
+      generatePreview();
+      updateProgress();
+    }
+
+    // Atualizar cores
+    function updateColors() {
+      siteData.colors.primary = document.getElementById('primaryColor').value;
+      siteData.colors.secondary = document.getElementById('secondaryColor').value;
+      siteData.colors.accent = document.getElementById('accentColor').value;
+      
+      // Atualizar previews de cor
+      document.querySelectorAll('.color-preview').forEach((preview, index) => {
+        const colors = [siteData.colors.primary, siteData.colors.secondary, siteData.colors.accent];
+        preview.style.background = colors[index];
+      });
+      
+      generatePreview();
+      updateProgress();
+    }
+
+    // Adicionar imagem à galeria
+    function addImage() {
+      const url = document.getElementById('newImageUrl').value;
+      const alt = document.getElementById('newImageAlt').value;
+      
+      if (url && alt) {
+        siteData.gallery.push({ url: url, alt: alt });
+        document.getElementById('newImageUrl').value = '';
+        document.getElementById('newImageAlt').value = '';
+        loadImageList();
+        generatePreview();
+        updateProgress();
+        showToast('Imagem adicionada com sucesso!', 'success');
+      } else {
+        showToast('Preencha a URL e o texto alternativo!', 'error');
+      }
+    }
+
+    // Carregar lista de imagens
+    function loadImageList() {
+      const imageList = document.getElementById('imageList');
+      imageList.innerHTML = '';
+      
+      siteData.gallery.forEach((image, index) => {
+        const imageItem = document.createElement('div');
+        imageItem.className = 'image-item';
+        imageItem.innerHTML = `
+          <div style="display: flex; align-items: center; flex: 1;">
+            <img src="${image.url}" class="image-preview" alt="${image.alt}">
+            <span>${image.alt}</span>
+          </div>
+          <button class="btn btn-danger" style="min-width: 60px; margin: 0;" onclick="removeImage(${index})">
+            <i class="fas fa-trash"></i>
+          </button>
+        `;
+        imageList.appendChild(imageItem);
+      });
+    }
+
+    // Remover imagem
+    function removeImage(index) {
+      siteData.gallery.splice(index, 1);
+      loadImageList();
+      generatePreview();
+      updateProgress();
+      showToast('Imagem removida!', 'success');
+    }
+
+    // Gerar preview
+    function generatePreview() {
+      const originalHTML = \`<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>${siteData.title}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Abel&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { font-family: 'Abel', sans-serif; color: #fff; overflow-x: hidden; }
+
+    .background-container {
+      position: fixed; top: 0; left: 0;
+      width: 100%; height: 100%;
+      overflow: hidden; z-index: -1;
+    }
+    .background-container img {
+      width: 100%; height: 100%; object-fit: cover;
+    }
+
+    .content { position: relative; z-index: 1; text-align: center; }
+    .page { display: none; }
+    .page.active { display: block; width: 100%; min-height: 100vh; }
+
+    .navbar {
+      overflow: hidden; background: rgba(30, 58, 95, 0.6);
+      display: flex; justify-content: flex-end; padding: 10px;
+    }
+    .navbar a {
+      color: white; padding: 15px 21px; text-decoration: none;
+    }
+    .navbar a:hover { background: rgba(255, 255, 255, 0.1); border-radius: 8px; }
+
+    .logo-container {
+      display: flex; justify-content: center; align-items: center;
+      position: relative; padding: 50px 20px;
+    }
+    .logo img { max-width: 600px; height: auto; }
+
+    .carrinho {
+      position: absolute; right: 20px; top: 50%; transform: translateY(-50%);
+    }
+    .carrinho img { width: 40px; height: 40px; cursor: pointer; }
+
+    .carrossel-texto {
+      white-space: nowrap; overflow: hidden; width: 100%; margin: 20px 0;
+    }
+    .carrossel-texto span {
+      display: inline-block; padding-left: 100%;
+      animation: scroll 20s linear infinite;
+      font-size: 2rem; font-weight: bold; color:#F2F2F0;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+    }
+    @keyframes scroll { 0% { transform: translateX(0);} 100% { transform: translateX(-100%);} }
+
+    .galeria-container {
+      position: relative; margin: 20px auto; width: 95%;
+      display: flex; justify-content: center;
+    }
+    .galeria {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 15px; justify-items: center; width: 100%;
+    }
+    .galeria img {
+      width: 300px; height: 300px; object-fit: cover;
+      border-radius: 0; transition: transform 0.3s ease;
+    }
+    .galeria img:hover { transform: scale(1.05); }
+
+    .gallery-button {
+      padding: 15px 30px; background-color: ${siteData.colors.primary}; color: white;
+      font-size: 18px; border-radius: 0; opacity: 0.6;
+      transition: all 0.3s ease; margin: 30px 0;
+      border: none; cursor: pointer;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    }
+    .gallery-button:hover {
+      opacity: 1; transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(0,0,0,0.3);
+      background-color: ${siteData.colors.secondary};
+    }
+
+    .chat-float { position: fixed; bottom: 30px; right: 30px; z-index: 1000; }
+    .chat {
+      background: linear-gradient(135deg,${siteData.colors.primary}, ${siteData.colors.secondary});
+      color: white; padding: 15px 25px;
+      border-radius: 50px; cursor: pointer;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+      font-weight: bold; font-size: 16px; border: none;
+    }
+    .chat:hover { background: linear-gradient(135deg, ${siteData.colors.accent}, #028A32); }
+
+    footer { 
+      margin-top: 50px; padding: 30px 20px; 
+      background: rgba(30, 58, 95, 0.9); text-align: center; 
+    }
+    .footer-content {
+      max-width: 800px; margin: 0 auto;
+      display: flex; justify-content: space-between;
+      align-items: center; flex-wrap: wrap; gap: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="background-container">
+    <img src="${siteData.backgroundUrl}" alt="Background GIF">
+  </div>
+
+  <div class="content">
+    <div class="page main-page active">
+      <div class="navbar">
+        <a href="https://wa.me/${siteData.navigation.whatsapp}?text=seja%20bem%20vindo%20" target="_blank">Contatos</a>
+        <a href="${siteData.navigation.about}" target="_blank">Sobre</a>
+        <a href="${siteData.navigation.terms}" target="_blank">Termos</a>
+      </div><script>
+function previewChanges() {
+  let html = (typeof generateCompleteHTML === 'function') ? generateCompleteHTML() : (typeof generatePreview === 'function' ? generatePreview() : '');
+  const frame = document.getElementById('previewFrame');
+  if (!frame) {
+    showToast('Preview frame não encontrado.', 'error');
+    return;
+  }
+  frame.srcdoc = html;
+  showToast('Preview atualizado!', 'success');
+}
+
+function refreshPreview() {
+  previewChanges();
+}
+
+function saveChanges() {
+  try {
+    const html = (typeof generateCompleteHTML === 'function') ? generateCompleteHTML() : '';
+    localStorage.setItem('savedSiteHTML', html);
+    showToast('Alterações salvas no localStorage.', 'success');
+  } catch (e) {
+    console.error(e);
+    showToast('Erro ao salvar alterações.', 'error');
+  }
+}
+
+function downloadHTML() {
+  const html = (typeof generateCompleteHTML === 'function') ? generateCompleteHTML() : '';
+  const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = (document.getElementById('siteTitle')?.value || 'site') + '.html';
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  URL.revokeObjectURL(url);
+  showToast('Download iniciado.', 'success');
+}
+
+(function loadSavedPreviewOnStart() {
+  try {
+    const saved = localStorage.getItem('savedSiteHTML');
+    if (saved) {
+      const frame = document.getElementById('previewFrame');
+      if (frame) frame.srcdoc = saved;
+    }
+  } catch (e) { }
+})();
+</script>
