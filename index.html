@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Editor Visual — lapindesigner360 (corrigido)</title>
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;margin:0;background:#f5f5f5;color:#222}
+    .wrap{display:flex;min-height:100vh}
+    .sidebar{width:360px;background:#fff;border-right:1px solid #e6e6e6;padding:18px;box-sizing:border-box;overflow:auto}
+    .preview{flex:1;padding:12px}
+    h2{margin:0 0 8px}
+    .panel{margin-bottom:14px}
+    input,textarea,select,button{width:100%;padding:8px;margin-top:6px;box-sizing:border-box}
+    label.file-btn{display:block;background:#6c757d;color:#fff;text-align:center;padding:10px;border-radius:6px;cursor:pointer}
+    #preview-iframe{width:100%;height:85vh;border:1px solid #ddd}
+    .small{font-size:0.85rem;color:#666;margin-top:6px}
+    .inline{display:flex;gap:8px}
+    .inline > *{flex:1}
+    .row{display:flex;gap:8px}
+    .muted{color:#888;font-size:0.9rem}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="sidebar">
+      <h2>Editor Visual — lapindesigner360 (corrigido)</h2>
+
+      <div class="panel">
+        <h3>1) Carregar site (index.html)</h3>
+        <input type="file" id="import-file" accept=".html">
+        <label for="import-file" class="file-btn">📂 Carregar index.html</label>
+        <div class="small">Também aceita arrastar/colar HTML na textarea do final.</div>
+      </div>
+
+      <div class="panel">
+        <h3>2) Fundo / Background</h3>
+        <input id="bg-src" placeholder="URL do background (ex: https://i.postimg.cc/...)" />
+        <button onclick="updateBackgroundSrc()">Atualizar fundo</button>
+        <div class="small">Detecta .background-container &lt;img&gt; ou body background.</div>
+      </div>
+
+      <div class="panel">
+        <h3>3) Logo (imagem)</h3>
+        <input id="logo-src" placeholder="URL da imagem do logo (src)" />
+        <div class="row"><button onclick="updateLogoSrc()">Atualizar logo</button><button onclick="removeLogo()">Remover logo</button></div>
+        <div class="small">Procura por: <code>.logo img</code>, <code>.logo-container img</code> ou primeiro &lt;img alt*="logo"&gt;.</div>
+      </div>
+
+      <div class="panel">
+        <h3>4) Menu / Navbar</h3>
+        <div class="inline">
+          <input id="menu1-text" placeholder="Texto 1">
+          <input id="menu1-href" placeholder="Href 1">
+        </div>
+        <div class="inline">
+          <input id="menu2-text" placeholder="Texto 2">
+          <input id="menu2-href" placeholder="Href 2">
+        </div>
+        <div class="inline">
+          <input id="menu3-text" placeholder="Texto 3">
+          <input id="menu3-href" placeholder="Href 3">
+        </div>
+        <button onclick="updateMenuLinks()">Atualizar menu</button>
+        <div class="small">Detecta links em <code>.menu-item, .navbar a, nav a</code>.</div>
+      </div>
+
+      <div class="panel">
+        <h3>5) Galeria — adicionar GIF sem editar código</h3>
+        <div class="small">Cole um link direto do GIF ou link do Postimg — o editor tentará gerar o link direto.</div>
+        <input id="gif-url" placeholder="Cole aqui o link do postimg ou link direto"> 
+        <div style="display:flex;gap:8px;margin-top:6px">
+          <button onclick="addGifByUrl()">➕ Adicionar por URL</button>
+          <label class="file-btn" style="flex:1"><input id="gif-upload" type="file" accept="image/gif,image/png,image/jpeg" style="display:none">📁 Upload imagem local</label>
+        </div>
+        <div class="small">Aviso: uploads locais aparecem no preview mas não ficam hospedados no HTML salvo (use links hospedados se quiser distribuir).</div>
+
+        <div class="panel" style="margin-top:8px">
+          <h4>Gerar links a partir do Postimg</h4>
+          <input id="postimg-link" placeholder="Cole o link do postimg.cc aqui" />
+          <button onclick="generateAndShowPostimg()">Gerar possíveis links (gif/png/jpg)</button>
+          <div id="generated" class="generated-list muted"></div>
+        </div>
+
+        <h4 style="margin-top:10px">JSON atual da galeria</h4>
+        <textarea id="gallery-json" rows="6" placeholder='Ex: [{"title":"Chefão","desc":"...","img":"https://...png","cat":"logos"}]'></textarea>
+        <button onclick="updateGalleryFromJSON()">Atualizar galeria</button>
+        <div class="small">Procura e atualiza tanto <code>.galeria</code> quanto <code>.mockup-gif-gallery</code>.</div>
+      </div>
+
+      <div class="panel">
+        <h3>6) Rodapé</h3>
+        <input id="footer-copy" placeholder="Texto do rodapé (ex: © 2025 - lapindesigner360)" />
+        <input id="footer-slogan" placeholder="Slogan" />
+        <input id="visitor-count" placeholder="Visitantes (número)" />
+        <button onclick="updateFooter()">Atualizar rodapé</button>
+        <div class="small">Detecta elementos: <code>.copyright</code>, <code>footer p</code> ou <code>.footer-content</code>.</div>
+      </div>
+
+      <div class="panel">
+        <button onclick="saveHTML()" style="background:#28a745;color:#fff">💾 Baixar index.html editado</button>
+        <div class="small">O arquivo salvo preserva &lt;head&gt; e estilos do documento importado.</div>
+      </div>
+
+      <div class="panel">
+        <h3>7) Colar / Subir HTML manual</h3>
+        <textarea id="manual-html" rows="6" placeholder="Cole aqui o HTML completo se preferir"></textarea>
+        <button onclick="importFromTextarea()">Importar HTML colado</button>
+      </div>
+
+    </div>
+
+    <div class="preview">
+      <h2>Pré-visualização</h2>
+      <iframe id="preview-iframe" sandbox="allow-same-origin allow-scripts"></iframe>
+    </div>
+  </div>
+
+  <script>
+    // Estado: documento em memória usado para edição
+    let currentDoc = document.implementation.createHTMLDocument('preview');
+
+    // Template mínimo (usado se nada for importado)
+    const baseTemplate = `<!DOCTYPE html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>lapindesigner360</title><style>body{font-family:Arial,Helvetica,sans-serif}</style></head><body><div class="content"><nav class="navbar"><a class="menu-item" href="#">Contatos</a><a class="menu-item" href="#">Sobre</a><a class="menu-item" href="#">Termos</a></nav><div class="logo-container"><div class="logo"><img src="" alt="logo"></div></div><div class="galeria"><!-- galeria --></div><footer><div class="footer-content"><p class="copyright">© 2025 - lapindesigner360</p><p class="slogan">Criando identidades visuais únicas</p><div class="visitor-count">Visitantes do site: 0</div></div></footer></div></body></html>`;
+
+    currentDoc.documentElement.innerHTML = baseTemplate;
+    const iframe = document.getElementById('preview-iframe');
+
+    function refreshPreview(){
+      const html = '<!DOCTYPE html>' + currentDoc.documentElement.outerHTML;
+      iframe.srcdoc = html;
+    }
+
+    // Inicializa
+    refreshPreview();
+
+    // Util: parse HTML string -> Document
+    function parseHTML(txt){
+      const parser = new DOMParser();
+      return parser.parseFromString(txt, 'text/html');
+    }
+
+    // Import a partir de input file
+    document.getElementById('import-file').addEventListener('change', async (e)=>{
+      const f = e.target.files[0]; if(!f) return;
+      try{
+        const txt = await f.text();
+        importHTMLString(txt);
+        alert('HTML importado com sucesso — verifique os controles.');
+      }catch(err){ alert('Erro ao importar: '+err.message); }
+    });
+
+    function importFromTextarea(){
+      const txt = document.getElementById('manual-html').value.trim();
+      if(!txt) { alert('Cole algum HTML primeiro'); return; }
+      importHTMLString(txt);
+      alert('HTML importado da textarea.');
+    }
+
+    function importHTMLString(txt){
+      try{
+        const imported = parseHTML(txt);
+        // preserva head se houver
+        const importHead = imported.head && imported.head.innerHTML ? imported.head.innerHTML : currentDoc.head.innerHTML;
+        const importBody = imported.body && imported.body.innerHTML ? imported.body.innerHTML : currentDoc.body.innerHTML;
+        currentDoc.documentElement.innerHTML = '<head>' + importHead + '</head><body>' + importBody + '</body>';
+
+        // Preencher controles com os valores detectados (robusto para seu site)
+        // Logo
+        const logoImg = imported.querySelector('.logo img') || imported.querySelector('.logo-container img') || imported.querySelector('img[alt*="logo"]') || imported.querySelector('img');
+        document.getElementById('logo-src').value = logoImg ? (logoImg.src || '') : '';
+
+        // Background
+        const bgImg = imported.querySelector('.background-container img') || null;
+        document.getElementById('bg-src').value = bgImg ? (bgImg.src||'') : '';
+
+        // Menu
+        const menuEls = imported.querySelectorAll('.menu-item, .navbar a, nav a');
+        if(menuEls && menuEls.length){
+          if(menuEls[0]){ document.getElementById('menu1-text').value = menuEls[0].textContent.trim(); document.getElementById('menu1-href').value = menuEls[0].getAttribute('href') || ''; }
+          if(menuEls[1]){ document.getElementById('menu2-text').value = menuEls[1].textContent.trim(); document.getElementById('menu2-href').value = menuEls[1].getAttribute('href') || ''; }
+          if(menuEls[2]){ document.getElementById('menu3-text').value = menuEls[2].textContent.trim(); document.getElementById('menu3-href').value = menuEls[2].getAttribute('href') || ''; }
+        }
+
+        // Footer
+        const copyEl = imported.querySelector('.copyright') || imported.querySelector('footer p') || imported.querySelector('.footer-content p');
+        if(copyEl) document.getElementById('footer-copy').value = copyEl.textContent.trim();
+        const sloganEl = imported.querySelector('.slogan') || imported.querySelector('footer p:nth-of-type(2)') || null;
+        if(sloganEl) document.getElementById('footer-slogan').value = sloganEl.textContent.trim();
+
+        // Visitor count
+        const visEl = imported.querySelector('.visitor-count') || imported.querySelector('#visitor-count') || null;
+        if(visEl){ const m = visEl.textContent.match(/\d+/); if(m) document.getElementById('visitor-count').value = m[0]; }
+
+        // Galeria existente -> serializar para JSON simplificado
+        const galEls = imported.querySelectorAll('.galeria img, .galeria-container .galeria img, .mockup-gif-item img, .galeria img');
+        if(galEls && galEls.length){
+          const arr = Array.from(galEls).map(img => ({ title: img.alt||'', desc:'', img: img.src||'', cat: '' })).filter(i=>i.img);
+          if(arr.length) document.getElementById('gallery-json').value = JSON.stringify(arr, null, 2);
+        }
+
+        refreshPreview();
+      }catch(e){ alert('Erro ao processar HTML: '+e.message); }
+    }
+
+    // --- Background update ---
+    function updateBackgroundSrc(){
+      const src = document.getElementById('bg-src').value.trim();
+      let img = currentDoc.querySelector('.background-container img');
+      if(!img){
+        const wrapper = currentDoc.querySelector('.background-container') || currentDoc.body;
+        img = currentDoc.createElement('img'); img.alt = 'Background'; img.src = src;
+        // se não existir .background-container cria
+        if(!currentDoc.querySelector('.background-container')){
+          const div = currentDoc.createElement('div'); div.className='background-container'; div.appendChild(img);
+          currentDoc.body.insertBefore(div, currentDoc.body.firstChild);
+        } else {
+          wrapper.appendChild(img);
+        }
+      } else {
+        img.src = src;
+      }
+      refreshPreview();
+    }
+
+    // --- Logo ---
+    function updateLogoSrc(){
+      const src = document.getElementById('logo-src').value.trim();
+      let img = currentDoc.querySelector('.logo img') || currentDoc.querySelector('.logo-container img') || currentDoc.querySelector('img[alt*="logo"]') || currentDoc.querySelector('img');
+      if(!img){
+        const cont = currentDoc.querySelector('.logo') || currentDoc.querySelector('.logo-container') || currentDoc.body;
+        img = currentDoc.createElement('img'); img.alt = 'logo'; img.src = src;
+        cont.appendChild(img);
+      } else {
+        img.src = src;
+      }
+      refreshPreview();
+    }
+    function removeLogo(){
+      const img = currentDoc.querySelector('.logo img') || currentDoc.querySelector('.logo-container img') || document.querySelector('img[alt*="logo"]');
+      if(img){ img.remove(); refreshPreview(); }
+    }
+
+    // --- Menu ---
+    function updateMenuLinks(){
+      const texts = [document.getElementById('menu1-text').value, document.getElementById('menu2-text').value, document.getElementById('menu3-text').value];
+      const hrefs = [document.getElementById('menu1-href').value, document.getElementById('menu2-href').value, document.getElementById('menu3-href').value];
+      const menuEls = currentDoc.querySelectorAll('.menu-item, .navbar a, nav a');
+      for(let i=0;i<3;i++){
+        if(menuEls[i]){
+          if(texts[i]) menuEls[i].textContent = texts[i];
+          if(hrefs[i]) menuEls[i].setAttribute('href', hrefs[i]);
+        } else {
+          const nav = currentDoc.querySelector('.navbar') || currentDoc.querySelector('nav') || currentDoc.body;
+          const a = currentDoc.createElement('a'); a.className='menu-item'; a.href = hrefs[i]||'#'; a.textContent = texts[i]||('Link '+(i+1));
+          nav.appendChild(a);
+        }
+      }
+      refreshPreview();
+    }
+
+    // --- Footer ---
+    function updateFooter(){
+      const copy = document.getElementById('footer-copy').value;
+      const slogan = document.getElementById('footer-slogan').value;
+      const visitors = document.getElementById('visitor-count').value;
+      const copyEl = currentDoc.querySelector('.copyright') || currentDoc.querySelector('footer p') || currentDoc.querySelector('.footer-content p');
+      const sloganEl = currentDoc.querySelector('.slogan') || currentDoc.querySelector('footer p:nth-of-type(2)');
+      const visEl = currentDoc.querySelector('.visitor-count') || currentDoc.querySelector('#visitor-count');
+      if(copyEl && copy) copyEl.textContent = copy;
+      if(sloganEl && slogan) sloganEl.textContent = slogan;
+      if(visEl && visitors!=='') visEl.textContent = 'Visitantes do site: ' + visitors;
+      refreshPreview();
+    }
+
+    // --- Galeria helpers ---
+    function generatePostimgCandidates(link){
+      try{ const u = new URL(link); if(u.hostname.includes('postimg.cc') || u.hostname.includes('postimages.org')){ const parts = u.pathname.split('/').filter(Boolean); const last = parts[parts.length-1] || ''; const base = 'https://i.postimg.cc/' + last; return [base + '.gif', base + '.png', base + '.jpg']; } if(u.hostname.includes('i.postimg.cc')) return [link]; return [link]; }catch(e){ return [link]; }
+    }
+    function extractFilename(url){ try{ const p = new URL(url).pathname.split('/').pop(); return p || url.slice(0,20); }catch(e){ return url.slice(0,20); } }
+
+    function addGifByUrl(){
+      const url = document.getElementById('gif-url').value.trim();
+      if(!url){ alert('Cole a URL do GIF (ex: link direto ou link do postimg)'); return; }
+      const candidates = generatePostimgCandidates(url);
+      const chosen = candidates.find(u=>u.endsWith('.gif')) || candidates[0];
+      appendToGalleryArray({ title: extractFilename(chosen), desc: '', img: chosen, cat: 'Animações' });
+      refreshPreview();
+      alert('GIF adicionado ao JSON da galeria (verifique a textarea).');
+    }
+
+    document.getElementById('gif-upload').addEventListener('change', (e)=>{
+      const f = e.target.files[0]; if(!f) return; const url = URL.createObjectURL(f);
+      appendToGalleryArray({ title: f.name, desc: '', img: url, cat: 'Animações' });
+      refreshPreview();
+      alert('Imagem local adicionada ao preview.');
+    });
+
+    function generateAndShowPostimg(){
+      const link = document.getElementById('postimg-link').value.trim(); const out = document.getElementById('generated'); out.innerHTML = '';
+      if(!link){ out.textContent = 'Cole um link do postimg.cc'; return; }
+      const cand = generatePostimgCandidates(link);
+      cand.forEach(u=>{ const a = document.createElement('a'); a.href = u; a.target = '_blank'; a.textContent = u; out.appendChild(a); out.appendChild(document.createElement('br')); });
+      const btn = document.createElement('button'); btn.textContent = 'Adicionar o primeiro (preferência .gif)'; btn.onclick = ()=>{ const chosen = cand.find(x=>x.endsWith('.gif'))||cand[0]; appendToGalleryArray({ title: extractFilename(chosen), desc:'', img:chosen, cat:'Animações' }); alert('Adicionado: '+chosen); };
+      out.appendChild(btn);
+    }
+
+    function appendToGalleryArray(item){
+      const ta = document.getElementById('gallery-json');
+      let arr = [];
+      try{ arr = JSON.parse(ta.value || '[]'); if(!Array.isArray(arr)) arr = []; }catch(e){ arr = []; }
+      arr.push(item);
+      ta.value = JSON.stringify(arr, null, 2);
+      if(typeof updateGalleryFromJSON === 'function') updateGalleryFromJSON();
+    }
+
+    function updateGalleryFromJSON(){
+      const txt = document.getElementById('gallery-json').value.trim();
+      if(!txt){ alert('Cole o JSON da galeria primeiro'); return; }
+      try{
+        const arr = JSON.parse(txt);
+        if(!Array.isArray(arr)) throw new Error('JSON precisa ser um array');
+
+        // Atualiza .galeria (imagens simples) e .mockup-gif-gallery
+        const gal = currentDoc.querySelector('.galeria') || currentDoc.querySelector('.galeria-container .galeria');
+        const mock = currentDoc.querySelector('.mockup-gif-gallery') || currentDoc.querySelector('.mockup-gif-gallery');
+        if(gal){
+          gal.innerHTML = arr.map(item => `<img src="${item.img||''}" alt="${(item.title||'').replace(/\"/g,'')}">`).join('');
+        }
+        if(mock){
+          mock.innerHTML = arr.map(item => `\n  <div class="mockup-gif-item" data-category="${(item.cat||'').toLowerCase()}">\n    <img src="${item.img||''}" alt="${(item.title||'').replace(/\"/g,'')}">\n    <div class="gif-info">\n      <div class="gif-title">${(item.title||'')}</div>\n      <div class="gif-description">${(item.desc||'')}</div>\n      <div class="gif-category">${(item.cat||'')}</div>\n    </div>\n  </div>`).join('\n');
+        }
+        refreshPreview();
+        alert('Galeria atualizada.');
+      }catch(e){ alert('Erro no JSON: ' + e.message + '\nNenhuma alteração foi aplicada.'); }
+    }
+
+    // Salvar HTML (baixa o documento atual preservando head)
+    function saveHTML(){
+      try{
+        const html = '<!DOCTYPE html>\n' + currentDoc.documentElement.outerHTML;
+        const blob = new Blob([html], {type:'text/html;charset=utf-8'});
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a'); a.href = url; a.download = 'index.html'; document.body.appendChild(a); a.click(); document.body.removeChild(a); URL.revokeObjectURL(url);
+      }catch(e){ alert('Erro ao salvar: '+e.message); }
+    }
+
+    // Inicializa controles com o template atual
+    (function initControls(){
+      const img = currentDoc.querySelector('.logo img'); if(img) document.getElementById('logo-src').value = img.src||'';
+      const menuEls = currentDoc.querySelectorAll('.menu-item, .navbar a');
+      if(menuEls[0]) document.getElementById('menu1-text').value = menuEls[0].textContent.trim();
+      if(menuEls[1]) document.getElementById('menu2-text').value = menuEls[1].textContent.trim();
+      if(menuEls[2]) document.getElementById('menu3-text').value = menuEls[2].textContent.trim();
+      const copy = currentDoc.querySelector('.copyright') || currentDoc.querySelector('footer p'); if(copy) document.getElementById('footer-copy').value = copy.textContent.trim();
+    })();
+
+  </script>
+</body>
+</html>
